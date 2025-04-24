@@ -1,0 +1,9 @@
+{
+    "name": "mypkg",
+    "version": "1.0.0",
+    "author": "John Doe",
+    "dependencies": [
+      { "package": "std", "version": "1.2.0" }
+    ]
+  }
+  
