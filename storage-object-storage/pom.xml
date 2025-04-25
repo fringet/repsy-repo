@@ -1,5 +1,8 @@
 <!-- path: repsy-repo/storage-object-storage/pom.xml -->
-<project xmlns="http://maven.apache.org/POM/4.0.0">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -9,9 +12,17 @@
   </parent>
 
   <artifactId>storage-object-storage</artifactId>
+  <packaging>jar</packaging>
 
   <dependencies>
-    <!-- MinIO Java SDK (Central’de 8.5.17 mevcut) :contentReference[oaicite:0]{index=0} -->
+    <!-- shared StorageService interface -->
+    <dependency>
+      <groupId>com.example</groupId>
+      <artifactId>storage-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- MinIO Java SDK -->
     <dependency>
       <groupId>io.minio</groupId>
       <artifactId>minio</artifactId>

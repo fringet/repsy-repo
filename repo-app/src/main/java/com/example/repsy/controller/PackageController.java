@@ -27,16 +27,19 @@ public class PackageController {
     public ResponseEntity<?> upload(
             @PathVariable String packageName,
             @PathVariable String version,
-            @RequestParam("package.rep") MultipartFile rep,
-            @RequestParam("meta.json") MultipartFile meta) throws Exception {
+            @RequestParam("package.rep") MultipartFile rep,   // ← already correct
+            @RequestParam("meta.json")   MultipartFile meta)  // ← already correct
+            throws Exception {
 
-        if (!rep.getOriginalFilename().endsWith(".rep")
-                || !meta.getOriginalFilename().equals("meta.json")) {
-            return ResponseEntity.badRequest().body("Invalid file names or types");
+        // ✱ small improvement – make the checks null-safe & descriptive
+        if (rep.isEmpty() || meta.isEmpty()
+            || !rep.getOriginalFilename().endsWith(".rep")
+            || !"meta.json".equals(meta.getOriginalFilename())) {
+            return ResponseEntity.badRequest().body("Expecting files: package.rep + meta.json");
         }
 
         storage.save(packageName, version, "package.rep", rep.getInputStream());
-        storage.save(packageName, version, "meta.json", meta.getInputStream());
+        storage.save(packageName, version, "meta.json",  meta.getInputStream());
 
         // Manuel entity oluşturma
         PackageEntity entity = new PackageEntity();

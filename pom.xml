@@ -3,10 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example</groupId>
   <artifactId>repsy-repo-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>pom</packaging>
 
   <modules>
+    <module>storage-common</module>
     <module>storage-file-system</module>
     <module>storage-object-storage</module>
     <module>repo-app</module>

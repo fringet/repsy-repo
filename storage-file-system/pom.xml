@@ -1,16 +1,25 @@
 <!-- path: repsy-repo/storage-file-system/pom.xml -->
-<project xmlns="http://maven.apache.org/POM/4.0.0">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- Parent POM referansı -->
   <parent>
     <groupId>com.example</groupId>
     <artifactId>repsy-repo-parent</artifactId>
     <version>1.0.0</version>
   </parent>
 
-  <!-- Burada doğru artifactId olmalı -->
   <artifactId>storage-file-system</artifactId>
+  <packaging>jar</packaging>
 
-  <!-- (İsterseniz packaging ve dependencies de ekleyebilirsiniz; jar default) -->
+  <dependencies>
+    <!-- shared StorageService interface -->
+    <dependency>
+      <groupId>com.example</groupId>
+      <artifactId>storage-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 </project>

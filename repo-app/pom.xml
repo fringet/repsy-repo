@@ -1,7 +1,7 @@
 <!-- path: repsy-repo/repo-app/pom.xml -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -33,16 +33,21 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Storage modülleri -->
+    <!-- Storage API + strategies -->
+    <dependency>
+      <groupId>com.example</groupId>
+      <artifactId>storage-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.example</groupId>
       <artifactId>storage-file-system</artifactId>
-      <version>1.0.0</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.example</groupId>
       <artifactId>storage-object-storage</artifactId>
-      <version>1.0.0</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 
@@ -51,7 +56,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <!-- versiyon belirtmeye gerek yok; parent’taki dependencyManagement çözecek -->
+        <version>${spring-boot.version}</version>  <!-- ← silences the warning -->
         <executions>
           <execution>
             <goals><goal>repackage</goal></goals>
