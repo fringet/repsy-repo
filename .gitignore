@@ -1,3 +1,16 @@
+# Maven build output
 **/target/
+**/target/**
+
+# IDE files
+.idea/
+*.iml
+
+# Logs
 *.log
-**/target/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+/.m2/

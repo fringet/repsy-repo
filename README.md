@@ -1,126 +1,119 @@
-# Repsy – Lightweight Private Package Repository
+# Repsy Package Repository – Assignment
 
-**Repsy**, Spring Boot tabanlı, hafif ve esnek bir özel (private) paket depolama ve dağıtım servisidir. Paketlerinizi yerel dosya sistemi veya MinIO (S3 uyumlu) nesne depolama üzerinde tutar ve basit bir REST API ile yönetmenizi sağlar.
+This repo is my submission for the "Junior Full-Stack Developer" assignment.  
+It implements a minimal Maven-style package repository for the imaginary "Repsy" language, featuring two interchangeable storage back-ends (file-system and MinIO object storage).
 
-## Genel Özellikler
+The deliverables include:
 
-- Kolayca Docker Compose ile çalıştırılabilir yapı
-- Seçilebilir depolama stratejileri:
-  - **Yerel dosya sistemi**
-  - **MinIO (S3 uyumlu nesne depolama)**
-- Basit ve kullanımı kolay REST API:
-  - Paket yükleme (Upload)
-  - Paket indirme (Download)
-  - Paket sürüm listeleme (Metadata)
+- Spring Boot REST API
+- PostgreSQL persistence for package metadata
+- Strategy-pattern storage libraries (filesystem + MinIO) published to Repsy Maven repo
+- Docker Compose stack for one-command local run
+- Test script that exercises deploy, download, and negative test paths
 
-## Ön Koşullar
+---
 
-| Teknoloji | Tavsiye Edilen Sürüm |
-|-----------|----------------------|
-| Java      | 17 (LTS)             |
-| Maven     | ≥ 3.8                |
-| Docker    | ≥ 24                 |
-| Docker Compose | v2              |
+## Quick start (Docker Compose)
 
-## Projenin Kurulumu ve Çalıştırılması
-
-Projeyi çalıştırmak için aşağıdaki adımları uygulayın:
-
-**1\. Repoyu klonlayın:**
-
-```bash
-git clone <repo-url>
+git clone https://github.com/fringet/repsy-repo.git
 cd repsy-repo
-```
-
-**2\. Maven ile uygulamayı derleyin:**
-
-```bash
-mvn clean verify -DskipTests
-```
-
-**3\. Docker Compose ile uygulamayı başlatın:**
-
-```bash
 docker compose up --build
-```
 
-| Servis       | Port                             | Açıklama                    |
-|--------------|----------------------------------|-----------------------------|
-| repo-app     | `8080`                           | REST API (Spring Boot)      |
-| PostgreSQL   | `5432`                           | Metadata için veritabanı    |
-| MinIO        | `9000` (API), `9001` (Web Arayüz)| Paket depolama              |
-
-> MinIO yönetim arayüzüne erişim:
-> - URL: `http://localhost:9001`
-> - Kullanıcı adı: `minio`
-> - Şifre: `minio123`
-
-## API Kullanımı
-
-API Temel URL’i:
-```
-http://localhost:8080/api/packages
-```
-
-| HTTP Metodu | Endpoint             | Açıklama                   |
-|-------------|----------------------|----------------------------|
-| `PUT`       | `/pkg/{version}`     | Paket yükleme (upload)     |
-| `GET`       | `/pkg/{version}`     | Paket indirme (download)   |
-| `GET`       | `/pkg`               | Paketin sürümlerini listele|
-| `DELETE`    | `/pkg/{version}`     | Paket sürümü sil (opsiyonel)|
-
-### Örnek Kullanım
-
-**Paket Yükleme:**
-```bash
-curl -X PUT --data-binary @build/package.rep \
-  http://localhost:8080/api/packages/demo/1.0.0
-```
-
-**Paket İndirme:**
-```bash
-curl -o demo-1.0.0.rep \
-  http://localhost:8080/api/packages/demo/1.0.0
-```
-
-## Otomatik Testlerin Çalıştırılması
-
-API’nin temel fonksiyonlarını doğrulamak için test betiğini çalıştırabilirsiniz:
-
-```bash
+# Wait for all services to start, then run tests:
 ./scripts/test_api.sh
-```
+# Expected output:
+# ✔ 201 Created
+# ✔ content matches
+# ✔ 404 Not Found
 
-Bu script aşağıdaki adımları gerçekleştirir:
+Services exposed locally:
 
-- **Deploy:** Paketi yükler
-- **Download:** Paketi indirir ve doğrular
-- **Negatif Test:** Hatalı isteklerin yönetildiğini kontrol eder
+- REST API: `http://localhost:8080`
+- MinIO Console: `http://localhost:9001` (username: `minio`, password: `minio123`)
+- PostgreSQL: `localhost:5432` (username/password/database: `repsy`)
 
-Başarılı test sonucu aşağıdaki gibidir:
-```
-Tüm testler geçti!
-```
+---
 
-## Proje Sürümleme ve Dağıtımı
+## REST API Endpoints
 
-Mevcut sürüm: `1.0.0`
+- **Upload a package:**  
+  `POST /{packageName}/{version}`  
+  Multipart form-data with fields:  
+  - `package.rep` (binary package file)  
+  - `meta.json` (metadata file in JSON format)
 
-Git üzerinden yeni sürüm yayınlamak için:
+- **Download a file:**  
+  `GET /{packageName}/{version}/{fileName}`
 
-```bash
-git tag -a v1.0.0 -m "İlk stabil sürüm"
-git push origin main --tags
-```
+Endpoints return standard HTTP response codes (`201 Created`, `200 OK`, `400 Bad Request`, `404 Not Found`).
 
-Docker Hub'a push etmek için:
+---
 
-```bash
-docker login
-docker push <dockerhub-kullanici-adi>/repsy-repo-app:1.0.0
-```
+## Environment Variables
 
-## Katkıda Bulunma
+You can customize the application via these environment variables:
 
-Projeyle ilgili geri bildirim, geliştirme önerileri veya hata raporları için lütfen bir Issue veya Pull Request oluşturun. Katkılarınız bizim için önemlidir.
+| Variable                    | Default                              |
+|-----------------------------|--------------------------------------|
+| STORAGE_STRATEGY            | `object-storage` (in Docker Compose) |
+| storage.fs.root             | `uploads`                            |
+| storage.minio.endpoint      | `http://minio:9000`                  |
+| storage.minio.accessKey     | `minio`                              |
+| storage.minio.secretKey     | `minio123`                           |
+| storage.minio.bucket        | `repsy`                              |
+| SPRING_DATASOURCE_URL       | `jdbc:postgresql://db:5432/repsy`    |
+| SPRING_DATASOURCE_USERNAME  | `repsy`                              |
+| SPRING_DATASOURCE_PASSWORD  | `repsy`                              |
+
+To switch storage strategies, run:
+
+STORAGE_STRATEGY=file-system docker compose up
+
+---
+
+## Manual API Demonstration (without test script)
+
+Deploy a package manually:
+
+curl -F "package.rep=@test-data/mypackage.rep" \
+     -F "meta.json=@test-data/meta.json" \
+     http://localhost:8080/mypkg/1.0.0
+
+Download the package file manually:
+
+curl -o mypackage.rep http://localhost:8080/mypkg/1.0.0/package.rep
+
+---
+
+## Building from Source (Requires JDK 17+ and Maven 3.8+)
+
+mvn clean package -DskipTests
+
+Produces the following artifacts:
+
+- `storage-common-1.0.0.jar`
+- `storage-file-system-1.0.0.jar`
+- `storage-object-storage-1.0.0.jar`
+- `repo-app-1.0.0.jar` (Spring Boot executable JAR)
+
+---
+
+## Published Artifacts and Docker Image
+
+- **Maven Repository (Storage Libraries):**  
+  https://repo.repsy.io/mvn/fringet/libs
+
+- **Docker Registry (Spring Boot App):**  
+  `registry.repsy.io/fringet/repo-app:1.0.0`
+
+The Spring Boot application resolves the storage libraries directly from the Repsy Maven repository, demonstrating external dependency usage.
+
+---
+
+## Additional Notes for Reviewers
+
+- The API intentionally has no authentication or security constraints, in line with the assignment requirements.
+- Uploaded `meta.json` is validated only for basic JSON syntax and correct filenames; `package.rep` files are treated as opaque, per the assignment specification.
+- Storage strategy selection is dynamically handled via Spring's `@ConditionalOnProperty`.
+
+Thank you for reviewing this assignment. 

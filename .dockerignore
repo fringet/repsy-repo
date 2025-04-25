@@ -1,0 +1,4 @@
+# .dockerignore  (project root)
+**/target/
+.git
+.idea

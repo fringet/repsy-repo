@@ -13,6 +13,18 @@
     <module>repo-app</module>
   </modules>
 
+  <!-- ────────────────────────────────────────────────────────────────────────── -->
+  <!-- Publish to your private Repsy Maven repo                              -->
+  <distributionManagement>
+    <repository>
+      <!-- id must match your ~/.m2/settings.xml server id -->
+      <id>repsy</id>
+      <name>Private Repsy Maven Repository</name>
+      <url>https://repo.repsy.io/mvn/fringet/libs</url>
+    </repository>
+  </distributionManagement>
+  <!-- ────────────────────────────────────────────────────────────────────────── -->
+
   <properties>
     <java.version>17</java.version>
     <spring-boot.version>3.2.5</spring-boot.version>
